@@ -1,0 +1,21 @@
+version: "3"
+services:
+  app:
+    image: appiersign/apache
+    ports:
+    - 8880:80
+    volumes:
+    - ./:/var/www/html
+    working_dir: /var/www/html
+  db:
+    image: mysql
+    ports:
+    - 3307:3306
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: tasklist
+      MYSQL_DATABASE: tasklist
+      MYSQL_USER: tasklist
+      MYSQL_PASSWORD: task_word
+
+

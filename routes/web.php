@@ -16,3 +16,21 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::get('/tasks', function () {
+    return view('todo/index');
+});
+
+/**
+ * Add A New Task
+ */
+Route::post('/tasks', function (Request $request) {
+    //
+});
+
+/**
+ * Delete An Existing Task
+ */
+Route::delete('/tasks/{id}', function ($id) {
+    //
+});

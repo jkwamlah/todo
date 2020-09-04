@@ -152,23 +152,23 @@
                                                aria-describedby="button-addon1">
                                         <div class="input-group-append">
                                             <button class="btn btn-outline-light" type="button" id="button-addon1">
-                                                <i class="ti-search"></i>
+                                                <i class="fa fa-search"></i>
                                             </button>
                                         </div>
                                     </div>
                                 </form>
                                 <div class="app-pager d-flex align-items-center">
-                                    <div class="mr-3">1-50 of 253</div>
+                                    <div class="mr-3">1-8 of 20</div>
                                     <nav aria-label="Page navigation example">
                                         <ul class="pagination">
                                             <li class="page-item">
                                                 <a class="page-link" href="#" aria-label="Previous">
-                                                    <i data-feather="chevron-left" class="width-15 height-15"></i>
+                                                    <i class="fa fa-chevron-left"></i>
                                                 </a>
                                             </li>
                                             <li class="page-item">
                                                 <a class="page-link" href="#" aria-label="Next">
-                                                    <i data-feather="chevron-right" class="width-15 height-15"></i>
+                                                    <i class="fa fa-chevron-right"></i>
                                                 </a>
                                             </li>
                                         </ul>

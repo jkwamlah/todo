@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Task;
+use Carbon\Carbon;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\RedirectResponse;
@@ -46,23 +47,26 @@ class TaskController extends Controller
      */
     public function store(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'title' => ['required', 'string', 'min:5', 'unique:tasks,title'],
-            'label' => ['required', 'string', 'min:3'],
-            'deadline' => ['required', 'date'],
-            'priority' => ['required', 'string']
-        ]);
 
-        if ($validator->fails()) {
-            return redirect('/tasks')->withInput()->withErrors($validator);
-        }
+//        $validator = Validator::make($request->all(), [
+//            'title' => ['required', 'string', 'min:5', 'unique:tasks,title'],
+//            'label' => ['required', 'string', 'min:5'],
+//            'deadline' => ['required', 'date'],
+//            'priority' => ['required', 'string']
+//        ]);
+//
+//        if ($validator->fails()) {
+//            return redirect('/tasks')->withInput()->withErrors($validator);
+//        }
 
-        $task = Task::query()->create($validator->validated());
-        if ($task){
-            session()->flash('success', $request->title.' added' );
-            return redirect()->route('todo.index');
-        }
+        $task = new Task;
+        $task->title = $request->title;
+        $task->label = $request->label;
+        $task->deadline = Carbon::parse($request->deadline)->format('Y-m-d');
+        $task->priority = $request->priority;
+        $task->save();
 
+        return redirect()->to('/tasks')->withInput([$request->title]);
     }
 
     /**
@@ -106,12 +110,14 @@ class TaskController extends Controller
      * Remove the specified resource from storage.
      *
      * @param Task $task
-     * @return string
+     * @return RedirectResponse|string
      */
     public function destroy(Task $task)
     {
         try {
-            $task->delete();
+            $tasks = Task::findorFail($task->id);
+            $tasks->delete();
+            return redirect()->to('/tasks');
         } catch (\Exception $e) {
             report($e);
             return ('Something went wrong! Try Again');

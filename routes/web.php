@@ -17,20 +17,30 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/tasks', function () {
-    return view('todo/index');
+Route::get('/login', function () {
+    return view('todo/login');
 });
 
-/**
- * Add A New Task
- */
-Route::post('/tasks', function (Request $request) {
-    //
+Route::get('/register', function () {
+    return view('todo/register');
 });
 
+
 /**
- * Delete An Existing Task
+ * Task Routes
  */
-Route::delete('/tasks/{id}', function ($id) {
-    //
-});
+Route::group(['prefix' => 'tasks'], fn() => [
+    Route::get('/', 'TaskController@index'),
+    Route::post('/', 'TaskController@store'),
+    Route::get('/{task}', 'TaskController@show'),
+    Route::put('/{task}', 'TaskController@update'),
+    Route::delete('/{task}', 'TaskController@destroy')
+]);
+
+/**
+ * Task Routes
+ */
+Route::group(['prefix' => 'auth'], fn() => [
+    Route::post('/login', 'TaskController@index'),
+    Route::post('/register', 'TaskController@post')
+]);

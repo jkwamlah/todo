@@ -13,9 +13,9 @@ services:
     - 3307:3306
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: tasklist
+      MYSQL_ROOT_PASSWORD: password
       MYSQL_DATABASE: tasklist
       MYSQL_USER: tasklist
-      MYSQL_PASSWORD: task_word
+      MYSQL_PASSWORD: password
 
 

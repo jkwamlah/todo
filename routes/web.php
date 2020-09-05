@@ -24,14 +24,15 @@ Route::group(['prefix' => 'tasks'], fn() => [
     Route::get('/', 'TaskController@index'),
     Route::post('/', 'TaskController@store'),
     Route::get('/{task}', 'TaskController@show'),
-    Route::get('/update/{task}', 'TaskController@update'),
-    Route::get('/destroy/{task}', 'TaskController@destroy')
+    Route::get('/{task}/edit', 'TaskController@show'),
+    Route::post('/update/{task}', 'TaskController@update'),
+    Route::delete('/{task}', 'TaskController@destroy')
 ]);
 
 /**
  * Auth Routes
  */
 Route::group(['prefix' => 'auth'], fn() => [
-    Route::post('/login', 'TaskController@index'),
-    Route::post('/register', 'TaskController@post')
+    Route::post('/login', 'AuthController@index'),
+    Route::post('/register', 'AuthController@post')
 ]);

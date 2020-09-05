@@ -17,8 +17,9 @@ class CreateTasksTable extends Migration
             $table->id();
             $table->string('title');
             $table->string('label');
-            $table->date('deadline')->default(date(today()));
             $table->enum('priority', ['urgent', 'important', 'medium', 'low'])->default('medium');
+            $table->string('status')->default('active')->nullable();
+
             $table->timestamps();
         });
     }

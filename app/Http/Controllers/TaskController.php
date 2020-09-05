@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Task;
-use Carbon\Carbon;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\RedirectResponse;
@@ -11,7 +10,6 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Redirector;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 
 class TaskController extends Controller
@@ -24,18 +22,8 @@ class TaskController extends Controller
     public function index()
     {
         return view('todo.index', [
-            'tasks' => Task::query()->orderBy('created_at', 'asc')->get()
+            'tasks' => Task::query()->orderBy('created_at', 'desc')->get()->where('status','active')
         ]);
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return Application|Factory|Response|View
-     */
-    public function create()
-    {
-        return view('todo.content');
     }
 
     /**
@@ -43,29 +31,20 @@ class TaskController extends Controller
      *
      * @param Request $request
      * @return Application|RedirectResponse|Response|Redirector
-     * @throws ValidationException
      */
     public function store(Request $request)
     {
+        $validator = Validator::make($request->all(), [
+            'title' => ['required', 'string', 'min:5', 'unique:tasks,title'],
+            'label' => ['required', 'string', 'min:3'],
+            'priority' => ['required', 'string']
+        ]);
 
-//        $validator = Validator::make($request->all(), [
-//            'title' => ['required', 'string', 'min:5', 'unique:tasks,title'],
-//            'label' => ['required', 'string', 'min:5'],
-//            'deadline' => ['required', 'date'],
-//            'priority' => ['required', 'string']
-//        ]);
-//
-//        if ($validator->fails()) {
-//            return redirect('/tasks')->withInput()->withErrors($validator);
-//        }
+        if ($validator->fails()) {
+            return redirect('/tasks');
+        }
 
-        $task = new Task;
-        $task->title = $request->title;
-        $task->label = $request->label;
-        $task->deadline = Carbon::parse($request->deadline)->format('Y-m-d');
-        $task->priority = $request->priority;
-        $task->save();
-
+        Task::query()->create($validator->validated());
         return redirect()->to('/tasks')->withInput([$request->title]);
     }
 
@@ -77,7 +56,7 @@ class TaskController extends Controller
      */
     public function show(Task $task)
     {
-        return $task;
+        return $task ;
     }
 
     /**
@@ -92,19 +71,19 @@ class TaskController extends Controller
         $validator = Validator::make($request->all(), [
             'title' => ['required', 'string', 'min:5', 'unique:tasks,title'],
             'label' => ['required', 'string', 'min:3'],
-            'deadline' => ['required', 'date'],
-            'priority' => ['required', 'string'],
-            'description' => ['nullable', 'string']
+            'priority' => ['required', 'string']
         ]);
 
         try {
             $task->update($validator->validated());
+            return redirect('/tasks')->with('$title');
         } catch (\Exception $exception) {
             report($exception);
 
             return redirect('/tasks')->withInput()->withErrors($validator);
         }
     }
+
 
     /**
      * Remove the specified resource from storage.
@@ -115,7 +94,7 @@ class TaskController extends Controller
     public function destroy(Task $task)
     {
         try {
-            $tasks = Task::findorFail($task->id);
+            $tasks = Task::find($task->id);
             $tasks->delete();
             return redirect()->to('/tasks');
         } catch (\Exception $e) {

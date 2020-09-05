@@ -8,61 +8,71 @@
             </div>
         @endif
     </div>
-    <div class="card-title">
-        @if(count($tasks)===0)
-            <hr>
-            <h4 class="text-center d-flex justify-content-center" >No data found</h4>
-            <hr>
-        @endif
-    </div>
-
     <div class="card card-body app-content-body">
         <div class="app-lists">
-            <ul class="list-group list-group-flush">
-                @foreach($tasks as $task)
-                <li class="list-group-item task-list" >
-                    <div class="mr-3">
-                        <a href="#" class="app-sortable-handle">
-                            <i data-feather="move" class="width-15 height-15"></i>
-                        </a>
-                    </div>
-                    <div>
-                        <div class="custom-control custom-checkbox custom-checkbox-success mr-2">
-                            <input type="checkbox" class="custom-control-input" id="customCheck3">
-                            <label class="custom-control-label" for="customCheck3"></label>
-                        </div>
-                    </div>
-                    <div>
-                        <a href="#" class="add-star mr-3" title="Add stars">
-                            <i class="fa fa-star font-size-16 text-warning"></i>
-                        </a>
-                    </div>
-                    <div class="flex-grow-1 min-width-0">
-                        <div class="mb-1 d-flex align-items-center justify-content-between">
-                            <div class="app-list-title text-truncate">{{ $task->title }}
-                            </div>
-                            <div class="pl-3 d-flex align-items-center">
-                                <div class="mr-3 d-sm-inline d-none">
-                                    <div class="badge badge-info">{{ $task->label }}</div>
+
+            <div class="table-responsive ">
+                <table class="table text-center">
+                    <thead class="">
+                    <tr>
+                        <th scope="row">
+                        </th>
+                        <th scope="col">#</th>
+                        <th scope="col">Title</th>
+                        <th scope="col">Date Created</th>
+                        <th scope="col">Label</th>
+                        <th class="text-center" scope="col">Action</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @foreach($tasks as $task)
+                        <tr>
+                            <td>
+                                <div class="custom-control custom-checkbox custom-checkbox-success">
+                                    <input type="checkbox" class="custom-control-input" id="{{ $task->id }} ">
+                                    <label class="custom-control-label" for="{{ $task->id }} "></label>
                                 </div>
-
-                                <a href="/tasks/update/{{ $task->id }}" class="p-2">
-                                    <i class="fa fa-pencil" aria-hidden="true"></i>
-                                </a>
-
-                                <a href="/tasks/destroy/{{ $task->id }}" class="href">
-                                    <i class="fa fa-trash-o" aria-hidden="true"></i>
-                                </a>
-
-                            </div>
-                        </div>
-                    </div>
-                </li>
-                @endforeach
-            </ul>
+                            </td>
+                            <td>{{ $task->id }} </td>
+                            <td>{{ $task->title }}</td>
+                            <td>{{ date_format($task->created_at, 'D, Y-m-d') }}</td>
+                            <td><span class="badge badge-info"> {{ $task->label }} </span></td>
+                            <td class="text-center">
+                                <div class="dropdown">
+                                    <a href="#" class="btn btn-sm"
+                                       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <i class="fa fa-ellipsis-v" aria-hidden="true"></i>
+                                    </a>
+                                    <div class="dropdown-menu dropdown-menu-right ">
+                                        <form action="" method="POST">
+                                            @csrf
+                                            <a href="/tasks/{{ $task->id }}/edit" class="dropdown-item" >Edit</a>
+                                        </form>
+                                        <form action="/tasks/{{ $task->id }}" method="POST">
+                                            @csrf
+                                            <button class="dropdown-item " type="submit">Completed</button>
+                                        </form>
+                                        <form action="/tasks/{{ $task->id }}" method="POST">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button class="dropdown-item " type="submit">Delete</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    @endforeach
+                    </tbody>
+                </table>
+                <div class="card-title">
+                    @if(count($tasks)===0)
+                        <h4 class="text-center d-flex justify-content-center">No data found</h4>
+                    @endif
+                </div>
+            </div>
         </div>
-        <!-- end::app-lists -->
     </div>
+    <!-- end::app-lists -->
 
     <div class="modal fade" id="newTaskModal" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog" role="document">
@@ -86,13 +96,6 @@
                             <label class="col-sm-3 col-form-label">Label</label>
                             <div class="col-sm-9">
                                 <input type="text" name="label" class="form-control" required>
-                            </div>
-                        </div>
-                        <div class="form-group row row-sm">
-                            <label class="col-sm-3 col-form-label">Due Date</label>
-                            <div class="col-sm-5">
-                                <input type="text" name="deadline" class="form-control create-event-datepicker"
-                                       placeholder="{{ date('D, d M Y' ) }}">
                             </div>
                         </div>
                         <div class="form-group row">

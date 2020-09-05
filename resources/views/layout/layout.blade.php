@@ -100,25 +100,16 @@
                             <div class="app-sidebar-menu">
                                 <div class="list-group list-group-flush">
                                     <a href="#" class="list-group-item active d-flex align-items-center">
-                                        <i data-feather="mail" class="mr-2 width-15 height-15"></i> My Tasks
+                                        <i data-feather="mail" class="mr-2 width-15 height-15"></i> To do App
                                     </a>
-                                </div>
-                                <div class="card-body">
-                                    <h6 class="mb-0">Labels</h6>
                                 </div>
                                 <div class="list-group list-group-flush">
                                     <a href="#" class="list-group-item d-flex align-items-center">
-                                        <span class="text-warning fa fa-circle mr-2"></span> Work
+                                        <span class="text-warning fa fa-circle mr-2"></span> Completed
                                         <span class="small ml-auto">5</span>
                                     </a>
                                     <a href="#" class="list-group-item d-flex align-items-center">
-                                        <span class="text-success fa fa-circle mr-2"></span> Family
-                                    </a>
-                                    <a href="#" class="list-group-item d-flex align-items-center">
-                                        <span class="text-info fa fa-circle mr-2"></span> Friends
-                                    </a>
-                                    <a href="#" class="list-group-item d-flex align-items-center">
-                                        <span class="text-secondary fa fa-circle mr-2"></span> Coding
+                                        <span class="text-success fa fa-circle mr-2"></span> Deleted
                                     </a>
                                 </div>
                             </div>
@@ -134,10 +125,9 @@
                                            data-toggle="dropdown">
                                             Filter
                                         </a>
-                                        <div class="dropdown-menu">
-                                            <a class="dropdown-item" href="#">Favourites</a>
-                                            <a class="dropdown-item" href="#">Done</a>
-                                            <a class="dropdown-item" href="#">Deleted</a>
+                                        <div class="dropdown-menu mt-2">
+                                            <a class="dropdown-item" href="#">Pending</a>
+                                            <a class="dropdown-item" href="#">Completed</a>
                                         </div>
                                     </li>
                                 </ul>
@@ -178,6 +168,7 @@
                         </div>
 
                     @yield('index')
+                    @yield('edit')
 
 </body>
     <!-- Plugin scripts -->

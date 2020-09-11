@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Redirector;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 
 class TaskController extends Controller
@@ -27,25 +28,44 @@ class TaskController extends Controller
     }
 
     /**
+     * Show the form for creating a new resource.
+     *
+     * @return Application|Factory|Response|View
+     */
+    public function create()
+    {
+        return view('todo.createOrEdit', ['todo' => new Task()]);
+    }
+
+    /**
      * Store a newly created resource in storage.
      *
      * @param Request $request
      * @return Application|RedirectResponse|Response|Redirector
+     * @throws ValidationException
      */
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'title' => ['required', 'string', 'min:5', 'unique:tasks,title'],
+            'date' => ['required', 'date_format:Y-m-d'],
+            'time' => ['required', 'date_format:H:i'],
             'label' => ['required', 'string', 'min:3'],
-            'priority' => ['required', 'string']
+            'priority' => ['required', 'in:urgent,important,medium,low']
         ]);
 
         if ($validator->fails()) {
+            session()->flash('Error', 'Something went wrong!');
             return redirect('/tasks');
         }
 
+        $data = $request->only('task', 'status');
+        $data['schedule'] = implode(' ', $request->only('date', 'time'));
+        Task::query()->create($data);
         Task::query()->create($validator->validated());
-        return redirect()->to('/tasks')->withInput([$request->title]);
+        session()->flash('success', 'Task Added!');
+
+        return redirect()->route('todo.index');
     }
 
     /**
@@ -60,23 +80,41 @@ class TaskController extends Controller
     }
 
     /**
+     * Show the form for editing the specified resource.
+     *
+     * @param Task $todo
+     * @return Application|Factory|Response|View
+     */
+    public function edit(Task $todo)
+    {
+        return view('todo.createOrEdit', ['todo' => $todo]);
+    }
+
+    /**
      * Update the specified resource in storage.
      *
      * @param Request $request
      * @param Task $task
      * @return Application|RedirectResponse|Redirector
      */
-    public function update(Request $request, Task $task)
+    public function update(Request $request, Task $task): RedirectResponse
     {
-        $validator = Validator::make($request->all(), [
+        $request->validate([
             'title' => ['required', 'string', 'min:5', 'unique:tasks,title'],
+            'date' => ['required', 'date_format:Y-m-d'],
+            'time' => ['required', 'date_format:H:i'],
             'label' => ['required', 'string', 'min:3'],
-            'priority' => ['required', 'string']
+            'priority' => ['required', 'in:urgent,important,medium,low']
         ]);
 
         try {
-            $task->update($validator->validated());
-            return redirect('/tasks')->with('$title');
+            $data = $request->only('task', 'status');
+            $data['schedule'] = implode(' ', $request->only('date', 'time'));
+
+            $task->update($data);
+            session()->flash('success', 'Task Updated!');
+
+            return redirect()->route('todo.index');
         } catch (\Exception $exception) {
             report($exception);
 
@@ -94,9 +132,9 @@ class TaskController extends Controller
     public function destroy(Task $task)
     {
         try {
-            $tasks = Task::find($task->id);
-            $tasks->delete();
-            return redirect()->to('/tasks');
+            $task->delete();
+            session()->flash('success', "$task->title deleted!");
+            return redirect()->route('todo.index');
         } catch (\Exception $e) {
             report($e);
             return ('Something went wrong! Try Again');

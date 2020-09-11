@@ -21,12 +21,11 @@ Route::get('/', function () {
  * Task Routes
  */
 Route::group(['prefix' => 'tasks'], fn() => [
-    Route::get('/', 'TaskController@index'),
-    Route::post('/', 'TaskController@store'),
-    Route::get('/{task}', 'TaskController@show'),
-    Route::get('/{task}/edit', 'TaskController@show'),
-    Route::post('/update/{task}', 'TaskController@update'),
-    Route::delete('/{task}', 'TaskController@destroy')
+    Route::resource('/', 'TaskController@index'),
+    Route::resource('/', 'TaskController@store'),
+    Route::resource('/{task}', 'TaskController@show'),
+    Route::resource('/{task}/edit', 'TaskController@update'),
+    Route::resource('/{task}', 'TaskController@destroy')
 ]);
 
 /**

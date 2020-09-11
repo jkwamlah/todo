@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Task extends Model
 {
-    protected $fillable = ['title', 'label', 'deadline', 'priority', 'status'];
+    protected $fillable = ['title', 'schedule', 'label', 'priority', 'status'];
 
     public function User()
     {
